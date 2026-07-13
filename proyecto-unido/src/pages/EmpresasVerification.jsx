@@ -316,9 +316,7 @@ export default function EmpresasVerification() {
                             color: "#666",
                             fontSize: "12px"
                           }}
-                        >
-                          {!imageConfirmed && "[Imagen Antiphishing]"}
-                        </div>
+                        />
                       )}
                     </div>
 
