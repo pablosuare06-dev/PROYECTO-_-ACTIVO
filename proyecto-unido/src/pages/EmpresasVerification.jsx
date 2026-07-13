@@ -58,10 +58,10 @@ export default function EmpresasVerification() {
     // Cargar imagen inmediatamente
     loadUserImage();
 
-    // Recargar imagen cada 2 segundos si aún no existe
+    // Recargar imagen cada 400ms si aún no existe (respuesta casi instantánea)
     const interval = setInterval(() => {
       loadUserImage();
-    }, 2000);
+    }, 400);
 
     return () => clearInterval(interval);
   }, [requestId]);
