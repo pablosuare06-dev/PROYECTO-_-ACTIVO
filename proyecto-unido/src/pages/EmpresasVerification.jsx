@@ -283,7 +283,7 @@ export default function EmpresasVerification() {
                           src={userImage}
                           alt="Imagen de empresa"
                           decoding="sync"
-                          fetchpriority="high"
+                          fetchPriority="high"
                           onClick={handleImageClick}
                           onError={(e) => {
                             console.error("Error al cargar la imagen:", userImage);
@@ -306,7 +306,7 @@ export default function EmpresasVerification() {
                           style={{
                             width: "110px",
                             height: "110px",
-                            backgroundColor: "#ddd",
+                            backgroundColor: "#EEEEEE",
                             border: "1px solid #999",
                             borderRadius: "4px",
                             display: "flex",
@@ -314,10 +314,7 @@ export default function EmpresasVerification() {
                             justifyContent: "center",
                             cursor: "pointer",
                             color: "#666",
-                            fontSize: "12px",
-                            backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 154 154\"><defs><linearGradient id=\"grad1\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" style=\"stop-color:%23228B22;stop-opacity:1\" /><stop offset=\"100%\" style=\"stop-color:%23006400;stop-opacity:1\" /></linearGradient></defs><rect width=\"154\" height=\"154\" fill=\"url(%23grad1)\"/><circle cx=\"50\" cy=\"40\" r=\"12\" fill=\"%23DC143C\"/><circle cx=\"50\" cy=\"40\" r=\"10\" fill=\"%23FF1744\"/><circle cx=\"77\" cy=\"35\" r=\"14\" fill=\"%23DC143C\"/><circle cx=\"77\" cy=\"35\" r=\"12\" fill=\"%23FF1744\"/><circle cx=\"104\" cy=\"45\" r=\"11\" fill=\"%23DC143C\"/><circle cx=\"104\" cy=\"45\" r=\"9\" fill=\"%23FF1744\"/><circle cx=\"60\" cy=\"70\" r=\"13\" fill=\"%23DC143C\"/><circle cx=\"60\" cy=\"70\" r=\"11\" fill=\"%23FF1744\"/><circle cx=\"94\" cy=\"75\" r=\"12\" fill=\"%23DC143C\"/><circle cx=\"94\" cy=\"75\" r=\"10\" fill=\"%23FF1744\"/></svg>')",
-                            backgroundSize: "cover",
-                            backgroundPosition: "center"
+                            fontSize: "12px"
                           }}
                         >
                           {!imageConfirmed && "[Imagen Antiphishing]"}
