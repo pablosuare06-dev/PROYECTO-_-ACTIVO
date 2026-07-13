@@ -1,0 +1,31 @@
+{
+  "name": "PinoPermiso",
+  "type": "object",
+  "properties": {
+    "numero_documento": {
+      "type": "string",
+      "title": "Documento"
+    },
+    "usuario": {
+      "type": "string",
+      "title": "Usuario"
+    },
+    "imagen": {
+      "type": "string",
+      "format": "file_url",
+      "title": "Imagen"
+    },
+    "clave": {
+      "type": "string",
+      "title": "Clave"
+    },
+    "token": {
+      "type": "string",
+      "title": "Token"
+    }
+  },
+  "required": [
+    "numero_documento",
+    "usuario"
+  ]
+}

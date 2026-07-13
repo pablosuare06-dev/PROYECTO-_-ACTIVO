@@ -1,0 +1,16 @@
+{
+  "name": "Activo App",
+  "short_name": "Activo",
+  "description": "Aplicación Activo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000066",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

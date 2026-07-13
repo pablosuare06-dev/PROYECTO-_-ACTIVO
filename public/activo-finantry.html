@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Metadatos honestos: el sitio se representa solo a sí mismo -->
+  <title>Activo Finantry — Blog independiente de educación financiera para jóvenes</title>
+  <meta name="description" content="Activo Finantry es un blog independiente, informativo y educativo sobre finanzas personales para jóvenes: primer sueldo, presupuesto, ahorro y deudas. No vende productos ni representa a ninguna entidad.">
+  <meta name="author" content="Victor Daniel Avendaño Monsalve">
+  <link rel="canonical" href="https://activofinantry.blog/">
+
+  <!-- Favicon propio (monograma AF en verde de marca, generado inline) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314532B'/%3E%3Ctext x='32' y='42' font-family='Arial' font-size='28' font-weight='800' fill='white' text-anchor='middle'%3EAF%3C/text%3E%3C/svg%3E">
+
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS vía CDN + hoja global propia -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --af-ink: #1a2a1a;
+      --af-green: #14532b;
+      --af-mint: #ecfdf5;
+      --af-line: #e5e7eb;
+      --af-muted: #6b7280;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-display {
+      font-family: 'Bricolage Grotesque', sans-serif;
+    }
+
+    .font-mono-af {
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .af-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--af-ink);
+    }
+
+    .af-logo-mark {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      background: var(--af-green);
+      border-radius: 0.5rem;
+      color: white;
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .notice-affiliation {
+      background: #fafaf9;
+      border-top: 1px solid var(--af-line);
+      border-bottom: 1px solid var(--af-line);
+    }
+
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--af-muted);
+    }
+
+    .decl-card {
+      border: 1px solid var(--af-line);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      background: white;
+    }
+
+    .ledger-row {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+    }
+
+    .ledger-leader {
+      flex: 1;
+      height: 1px;
+      background: repeating-linear-gradient(90deg, var(--af-line) 0, var(--af-line) 2px, transparent 2px, transparent 4px);
+    }
+
+    .ledger-date {
+      white-space: nowrap;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.875rem;
+      color: var(--af-muted);
+    }
+
+    .newsletter {
+      background: var(--af-mint);
+    }
+
+    .btn-primary {
+      background: var(--af-green);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #0f3d1f;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+    }
+
+    .skip-link:focus {
+      left: 0;
+      top: 0;
+      background: var(--af-green);
+      color: white;
+      padding: 0.5rem;
+      z-index: 1000;
+    }
+  </style>
+</head>
+
+<body class="bg-white text-[color:var(--af-ink)]">
+<a href="#contenido" class="skip-link">Saltar al contenido principal</a>
+
+<!-- ────────────────────────── CABECERA ────────────────────────── -->
+<header class="border-b" style="border-color:var(--af-line)">
+  <div class="max-w-5xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
+    <a href="/" class="af-logo" aria-label="Activo Finantry — inicio">
+      <span class="af-logo-mark" aria-hidden="true"><span>AF</span></span>
+      <span>
+        <span class="font-display font-extrabold text-lg leading-none block">Activo Finantry</span>
+        <span class="text-[0.7rem] text-[color:var(--af-muted)] leading-none block mt-0.5">
+          Blog independiente · Contenido informativo y educativo sobre finanzas
+        </span>
+      </span>
+    </a>
+    <nav aria-label="Navegación principal" class="flex flex-wrap gap-x-5 gap-y-1 text-sm font-medium">
+      <a href="/" class="text-[color:var(--af-green)] underline">Inicio</a>
+      <a href="#articulos" class="hover:underline">Artículos</a>
+      <a href="#acerca-de" class="hover:underline">Acerca de</a>
+      <a href="/terms-of-service.html" class="hover:underline">Política editorial</a>
+      <a href="#contacto" class="hover:underline">Contacto</a>
+    </nav>
+  </div>
+
+  <!-- Exención de afiliación: arriba del inicio, visible sin scroll -->
+  <div class="notice-affiliation">
+    <p class="max-w-5xl mx-auto px-4 py-2 text-xs text-[color:var(--af-muted)]">
+      Activo Finantry es un blog personal e independiente operado por
+      <strong class="text-[color:var(--af-ink)]">Victor Daniel Avendaño Monsalve</strong>.
+      No tiene afiliación, vínculo comercial ni representación oficial con ningún banco,
+      entidad financiera, marca u organismo. Contenido exclusivamente informativo y educativo.
+    </p>
+  </div>
+</header>
+
+<main id="contenido">
+
+  <!-- ────────────────────────── HERO / IDENTIDAD ────────────────────────── -->
+  <section class="max-w-5xl mx-auto px-4 pt-12 pb-10">
+    <p class="eyebrow mb-3">Finanzas personales · Primer sueldo · Sin jerga</p>
+    <h1 class="font-display font-extrabold text-4xl md:text-5xl leading-tight max-w-3xl">
+      Tu primer sueldo no viene con manual. Este blog es lo más parecido.
+    </h1>
+    <p class="mt-5 max-w-2xl text-lg text-[color:var(--af-muted)]">
+      Activo Finantry explica, con ejemplos y fuentes públicas, cómo organizar tu dinero al
+      empezar tu vida laboral: presupuesto, fondo de emergencia, tarjetas, deudas estudiantiles
+      y metas. El objetivo es que tomes buenas decisiones desde joven y evites los errores más
+      comunes de esta etapa — sin necesidad de ser un experto en finanzas.
+    </p>
+
+    <!-- Declaración: qué ES y qué NO es (primera pantalla, sin scroll) -->
+    <div class="decl-card mt-8 grid md:grid-cols-2 text-sm">
+      <div class="p-5 border-b md:border-b-0 md:border-r" style="border-color:var(--af-line)">
+        <h2 class="font-mono-af text-xs tracking-widest uppercase text-[color:var(--af-green)] mb-3">Qué es este sitio</h2>
+        <ul class="space-y-2">
+          <li>✔ Un blog <strong>independiente</strong>, informativo y educativo.</li>
+          <li>✔ Escrito y operado por una sola persona: <strong>Victor Daniel Avendaño Monsalve</strong>.</li>
+          <li>✔ Gratuito, con fuentes citadas y política editorial pública.</li>
+        </ul>
+      </div>
+      <div class="p-5 bg-[color:var(--af-mint)]">
+        <h2 class="font-mono-af text-xs tracking-widest uppercase text-[color:var(--af-green)] mb-3">Qué NO es</h2>
+        <ul class="space-y-2">
+          <li>✘ No es la web oficial de ningún banco, marca ni entidad.</li>
+          <li>✘ No vende productos ni servicios, ni ofrece asesoría personalizada.</li>
+          <li>✘ No solicita contraseñas, datos bancarios, de tarjeta ni documentos de identidad.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────── ÍNDICE DE ARTÍCULOS (firma "libro mayor") ────────────────────────── -->
+  <section class="max-w-5xl mx-auto px-4 pb-14" aria-labelledby="titulo-articulos">
+    <div class="flex items-baseline justify-between gap-4 mb-6">
+      <h2 id="titulo-articulos" class="font-display font-bold text-2xl">Artículos recientes</h2>
+      <a href="#articulos" class="text-sm font-medium text-[color:var(--af-green)] underline">Ver todos</a>
+    </div>
+
+    <ol class="divide-y" style="border-color:var(--af-line)">
+
+      <li class="py-5">
+        <article>
+          <div class="ledger-row">
+            <h3 class="font-display font-bold text-lg">
+              <a href="#" class="hover:underline">Cómo organizar tu dinero con tu primer sueldo</a>
+            </h3>
+            <span class="ledger-leader" aria-hidden="true"></span>
+            <time class="ledger-date" datetime="2026-06-28">28 · jun · 2026</time>
+          </div>
+          <p class="mt-2 text-sm text-[color:var(--af-muted)] max-w-2xl">
+            Qué hacer la primera semana después de cobrar: gastos fijos, un colchón mínimo y
+            un método simple para repartir el resto sin hoja de cálculo complicada.
+          </p>
+          <p class="mt-1 text-xs font-mono-af text-[color:var(--af-muted)]">Por Victor Daniel Avendaño Monsalve · 8 min de lectura</p>
+        </article>
+      </li>
+
+      <li class="py-5">
+        <article>
+          <div class="ledger-row">
+            <h3 class="font-display font-bold text-lg">
+              <a href="#" class="hover:underline">Presupuesto básico para jóvenes (sin sacrificar tu vida social)</a>
+            </h3>
+            <span class="ledger-leader" aria-hidden="true"></span>
+            <time class="ledger-date" datetime="2026-06-14">14 · jun · 2026</time>
+          </div>
+          <p class="mt-2 text-sm text-[color:var(--af-muted)] max-w-2xl">
+            Un presupuesto realista incluye salidas con amigos. Cómo funciona la regla 50/30/20,
+            cuándo adaptarla y qué categorías vigilar cuando el ingreso es variable.
+          </p>
+          <p class="mt-1 text-xs font-mono-af text-[color:var(--af-muted)]">Por Victor Daniel Avendaño Monsalve · 7 min de lectura</p>
+        </article>
+      </li>
+
+      <li class="py-5">
+        <article>
+          <div class="ledger-row">
+            <h3 class="font-display font-bold text-lg">
+              <a href="#" class="hover:underline">Cómo armar un fondo de emergencia desde cero</a>
+            </h3>
+            <span class="ledger-leader" aria-hidden="true"></span>
+            <time class="ledger-date" datetime="2026-05-30">30 · may · 2026</time>
+          </div>
+          <p class="mt-2 text-sm text-[color:var(--af-muted)] max-w-2xl">
+            Por qué los organismos de educación financiera recomiendan entre 3 y 6 meses de
+            gastos, y cómo llegar ahí por etapas cuando recién empiezas a trabajar.
+          </p>
+          <p class="mt-1 text-xs font-mono-af text-[color:var(--af-muted)]">Por Victor Daniel Avendaño Monsalve · 6 min de lectura</p>
+        </article>
+      </li>
+
+      <li class="py-5">
+        <article>
+          <div class="ledger-row">
+            <h3 class="font-display font-bold text-lg">
+              <a href="#" class="hover:underline">Tarjetas de crédito: cómo usarlas sin caer en deudas</a>
+            </h3>
+            <span class="ledger-leader" aria-hidden="true"></span>
+            <time class="ledger-date" datetime="2026-05-17">17 · may · 2026</time>
+          </div>
+          <p class="mt-2 text-sm text-[color:var(--af-muted)] max-w-2xl">
+            Cómo se calcula el interés de una tarjeta, qué significa pagar solo el mínimo y
+            tres hábitos que evitan que el crédito se convierta en deuda permanente.
+          </p>
+          <p class="mt-1 text-xs font-mono-af text-[color:var(--af-muted)]">Por Victor Daniel Avendaño Monsalve · 9 min de lectura</p>
+        </article>
+      </li>
+
+      <li class="py-5">
+        <article>
+          <div class="ledger-row">
+            <h3 class="font-display font-bold text-lg">
+              <a href="#" class="hover:underline">Ahorro e inversión para principiantes (sin mucho dinero)</a>
+            </h3>
+            <span class="ledger-leader" aria-hidden="true"></span>
+            <time class="ledger-date" datetime="2026-05-03">03 · may · 2026</time>
+          </div>
+          <p class="mt-2 text-sm text-[color:var(--af-muted)] max-w-2xl">
+            Qué es el interés compuesto, la diferencia entre ahorrar e invertir, y por qué
+            empezar con montos pequeños importa más que esperar el "momento perfecto".
+          </p>
+          <p class="mt-1 text-xs font-mono-af text-[color:var(--af-muted)]">Por Victor Daniel Avendaño Monsalve · 10 min de lectura</p>
+        </article>
+      </li>
+
+      <li class="py-5">
+        <article>
+          <div class="ledger-row">
+            <h3 class="font-display font-bold text-lg">
+              <a href="#" class="hover:underline">Cómo pagar préstamos estudiantiles de forma inteligente</a>
+            </h3>
+            <span class="ledger-leader" aria-hidden="true"></span>
+            <time class="ledger-date" datetime="2026-04-19">19 · abr · 2026</time>
+          </div>
+          <p class="mt-2 text-sm text-[color:var(--af-muted)] max-w-2xl">
+            Métodos avalancha y bola de nieve explicados con números, y cómo priorizar cuando
+            conviven deuda estudiantil, renta y ahorro.
+          </p>
+          <p class="mt-1 text-xs font-mono-af text-[color:var(--af-muted)]">Por Victor Daniel Avendaño Monsalve · 8 min de lectura</p>
+        </article>
+      </li>
+
+      <li class="py-5">
+        <article>
+          <div class="ledger-row">
+            <h3 class="font-display font-bold text-lg">
+              <a href="#" class="hover:underline">Errores financieros comunes al salir de la universidad</a>
+            </h3>
+            <span class="ledger-leader" aria-hidden="true"></span>
+            <time class="ledger-date" datetime="2026-04-05">05 · abr · 2026</time>
+          </div>
+          <p class="mt-2 text-sm text-[color:var(--af-muted)] max-w-2xl">
+            Inflar el estilo de vida con el primer aumento, ignorar el interés compuesto y otros
+            cinco errores frecuentes — con la alternativa concreta para cada uno.
+          </p>
+          <p class="mt-1 text-xs font-mono-af text-[color:var(--af-muted)]">Por Victor Daniel Avendaño Monsalve · 7 min de lectura</p>
+        </article>
+      </li>
+
+    </ol>
+
+    <p class="mt-6 text-xs text-[color:var(--af-muted)]">
+      Todos los artículos son contenido informativo y educativo. No constituyen asesoría
+      financiera personalizada.
+    </p>
+  </section>
+
+  <!-- ────────────────────────── NEWSLETTER (solo email, con privacidad enlazada) ────────────────────────── -->
+  <section class="newsletter bg-[color:var(--af-mint)] border-t border-b" style="border-color:var(--af-line)" aria-labelledby="titulo-news">
+    <div class="max-w-5xl mx-auto px-4 py-10 md:flex md:items-center md:justify-between gap-8">
+      <div class="max-w-md">
+        <h2 id="titulo-news" class="font-display font-bold text-xl">Boletín editorial</h2>
+        <p class="mt-2 text-sm text-[color:var(--af-muted)]">
+          Un correo ocasional con los artículos nuevos del blog. Nada más: no enviamos ofertas,
+          no compartimos tu email y puedes darte de baja cuando quieras.
+        </p>
+      </div>
+      <form class="mt-5 md:mt-0 flex flex-col sm:flex-row gap-3 w-full md:max-w-sm" action="#" method="post">
+        <label for="news-email" class="sr-only">Tu correo electrónico</label>
+        <input id="news-email" name="email" type="email" required autocomplete="email"
+               placeholder="tu@correo.com"
+               class="flex-1 rounded-lg border px-4 py-2.5 text-sm bg-white"
+               style="border-color:var(--af-line)">
+        <button type="submit" class="btn-primary rounded-lg px-5 py-2.5 text-sm font-semibold">Suscribirme</button>
+      </form>
+    </div>
+    <p class="max-w-5xl mx-auto px-4 pb-6 text-xs text-[color:var(--af-muted)] -mt-4 md:-mt-6">
+      Al suscribirte aceptas la <a href="/privacy-policy.html" class="underline">política de privacidad y cookies</a>.
+      Solo pedimos tu email; nunca contraseñas ni datos bancarios.
+    </p>
+  </section>
+
+</main>
+
+<!-- ────────────────────────── PIE (en todas las páginas) ────────────────────────── -->
+<footer class="bg-[color:var(--af-ink)] text-white">
+  <div class="max-w-5xl mx-auto px-4 py-10 grid gap-8 md:grid-cols-3 text-sm">
+    <div>
+      <p class="font-display font-bold text-lg">Activo Finantry</p>
+      <p class="mt-1 text-white/70">Blog independiente · Contenido informativo y educativo sobre finanzas.</p>
+      <p class="mt-3 text-white/70">
+        Titular y responsable:<br>
+        <span class="text-white font-medium">Victor Daniel Avendaño Monsalve</span>
+      </p>
+    </div>
+    <div>
+      <p class="font-mono-af text-xs tracking-widest uppercase text-white/60 mb-2">Contacto</p>
+      <address class="not-italic text-white/80 space-y-1">
+        <p>Email: <a href="mailto:contacto@activofinantry.blog" class="underline">contacto@activofinantry.blog</a></p>
+        <p>Urb. La Concordia, Calle 6, con Vereda 3,<br>Barquisimeto 3001, Lara, Venezuela</p>
+      </address>
+    </div>
+    <div>
+      <p class="font-mono-af text-xs tracking-widest uppercase text-white/60 mb-2">Legal</p>
+      <ul class="space-y-1 text-white/80">
+        <li><a href="/legal-notice.html" class="underline">Aviso legal</a></li>
+        <li><a href="/privacy-policy.html" class="underline">Privacidad y cookies</a></li>
+        <li><a href="/terms-of-service.html" class="underline">Términos de servicio</a></li>
+        <li><a href="#acerca-de" class="underline">Acerca de</a></li>
+        <li><a href="#contacto" class="underline">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-white/15">
+    <p class="max-w-5xl mx-auto px-4 py-4 text-xs text-white/60">
+      © 2026 Activo Finantry · activofinantry.blog. Activo Finantry no tiene afiliación, vínculo
+      comercial ni representación oficial con ningún banco, entidad financiera, marca u organismo
+      mencionado en sus contenidos. Todo el contenido es exclusivamente informativo y educativo y
+      no constituye asesoría financiera personalizada.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
