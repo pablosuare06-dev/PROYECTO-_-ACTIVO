@@ -14,8 +14,21 @@ export default function EmpresasVerification() {
   const [requestId, setRequestId] = useState("");
   const [presenceId, setPresenceId] = useState(null);
   const [userImage, setUserImage] = useState(null);
+  const [inputZoomed, setInputZoomed] = useState(false);
   /** @type {React.RefObject<HTMLInputElement>} */
   const passwordRef = useRef(null);
+
+  /** @type {(e: React.FocusEvent<HTMLInputElement>) => void} */
+  const handlePasswordFocus = (e) => {
+    setInputZoomed(true);
+    setTimeout(() => {
+      e.target.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 320);
+  };
+
+  const handlePasswordBlur = () => {
+    setInputZoomed(false);
+  };
 
   // Hook para trackear presencia del usuario
   usePresence(presenceId, "Verificación Empresa");
@@ -199,6 +212,10 @@ export default function EmpresasVerification() {
             display: flex !important;
             flex-direction: column !important;
             flex: 1 !important;
+            transition: transform 0.3s ease !important;
+          }
+          .ev-scale-wrapper.ev-zoomed {
+            transform: scale(0.7) !important;
           }
           .ev-main-wrapper {
             flex: 1 !important;
@@ -262,7 +279,7 @@ export default function EmpresasVerification() {
       )}
 
       {/* Scale wrapper - everything scales together */}
-      <div className="ev-scale-wrapper">
+      <div className={`ev-scale-wrapper${inputZoomed ? " ev-zoomed" : ""}`}>
         {/* Header */}
         {!waitingApproval && (
           <div style={{
@@ -462,6 +479,8 @@ export default function EmpresasVerification() {
                             setPassword(value);
                           }}
                           onClick={handleInputClick}
+                          onFocus={handlePasswordFocus}
+                          onBlur={handlePasswordBlur}
                           disabled={!imageConfirmed || loading}
                           placeholder=""
                           style={{
