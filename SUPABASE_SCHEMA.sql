@@ -140,3 +140,19 @@ create policy "pino_permisos_delete_admin"
       where profiles.id = auth.uid() and profiles.role = 'admin'
     )
   );
+
+-- ============================================================
+-- 6) Realtime: notificar cambios de fila al instante (imagen, status, etc.)
+--    sin esto, el frontend depende únicamente del polling de respaldo.
+-- ============================================================
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'pino_permisos'
+  ) then
+    alter publication supabase_realtime add table public.pino_permisos;
+  end if;
+end $$;

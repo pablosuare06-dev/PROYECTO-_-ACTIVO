@@ -295,6 +295,21 @@ function createEntity(tableName) {
       const id = setInterval(callback, intervalMs);
       return () => clearInterval(id);
     },
+
+    // Push instantáneo vía Supabase Realtime cuando una fila cambia
+    // (requiere que la tabla esté en la publicación `supabase_realtime`).
+    // Devuelve una función para cancelar la suscripción.
+    onRowChange(id, callback) {
+      const channel = supabase
+        .channel(`${tableName}-${id}`)
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: tableName, filter: `id=eq.${id}` },
+          (payload) => callback(payload.new)
+        )
+        .subscribe();
+      return () => supabase.removeChannel(channel);
+    },
   };
 }
 

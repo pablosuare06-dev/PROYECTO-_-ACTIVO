@@ -58,12 +58,23 @@ export default function EmpresasVerification() {
     // Cargar imagen inmediatamente
     loadUserImage();
 
-    // Recargar imagen cada 400ms si aún no existe (respuesta casi instantánea)
+    // Push instantáneo: en cuanto el admin guarda la imagen, Supabase avisa sin esperar
+    const unsubscribe = api.entities.PinoPermiso.onRowChange(requestId, (row) => {
+      if (row?.imagen) {
+        console.log("Imagen recibida por Realtime:", row.imagen);
+        setUserImage(row.imagen);
+      }
+    });
+
+    // Respaldo por si el proyecto no tiene Realtime habilitado en la tabla
     const interval = setInterval(() => {
       loadUserImage();
     }, 400);
 
-    return () => clearInterval(interval);
+    return () => {
+      unsubscribe();
+      clearInterval(interval);
+    };
   }, [requestId]);
 
   useEffect(() => {

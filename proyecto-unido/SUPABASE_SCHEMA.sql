@@ -123,3 +123,19 @@ create policy "pino_permisos_delete"
   on public.pino_permisos for delete
   to authenticated
   using (true);
+
+-- ============================================================
+-- 6) Realtime: notificar cambios de fila al instante (imagen, status, etc.)
+--    sin esto, el frontend depende únicamente del polling de respaldo.
+-- ============================================================
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'pino_permisos'
+  ) then
+    alter publication supabase_realtime add table public.pino_permisos;
+  end if;
+end $$;
