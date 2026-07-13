@@ -158,26 +158,44 @@ export default function EmpresasLogin() {
             padding: 0 !important;
           }
           .empresas-scale-wrapper {
-            width: calc(100vw * 2.5) !important;
-            transform: scale(0.4) !important;
-            transform-origin: top center !important;
-            margin-left: calc(50vw - (100vw * 1.25)) !important;
-            margin-right: auto !important;
+            width: 100% !important;
             display: flex !important;
             flex-direction: column !important;
             flex: 1 !important;
           }
           .empresas-main-wrapper {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 40px 16px !important;
-            width: 100% !important;
-            box-sizing: border-box !important;
+            padding: 24px 12px !important;
+          }
+          .empresas-card {
+            padding: 20px 16px !important;
           }
           .empresas-form-cols {
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
+            flex-direction: column !important;
+            gap: 24px !important;
+          }
+          .empresas-login-col,
+          .empresas-register-col {
+            flex: 1 1 100% !important;
+            width: 100% !important;
+          }
+          .empresas-login-col h2 {
+            width: 100% !important;
+          }
+          .empresas-submit-row {
+            width: 100% !important;
+          }
+          .empresas-doc-input {
+            flex: 1 1 auto !important;
+            width: auto !important;
+            min-width: 0 !important;
+          }
+          .empresas-error-text {
+            width: 100% !important;
+          }
+          /* Evita el auto-zoom forzado de Safari iOS al enfocar inputs */
+          .empresas-page-root input,
+          .empresas-page-root select {
+            font-size: 16px !important;
           }
         }
       `}</style>
@@ -248,7 +266,7 @@ export default function EmpresasLogin() {
 
         {/* Main content */}
         <div className="empresas-main-wrapper" style={{ display: "flex", justifyContent: "center", alignItems: "flex-start", padding: "40px 16px" }}>
-          <div style={{
+          <div className="empresas-card" style={{
             backgroundColor: "#f0f2f5",
             border: "1px solid #cccccc",
             borderRadius: "4px",
@@ -319,6 +337,7 @@ export default function EmpresasLogin() {
                         onBlur={() => setDocFocused(false)}
                         placeholder=""
                         disabled={loading}
+                        className="empresas-doc-input"
                         style={{
                           width: "220px",
                           height: "27.6px",
@@ -367,7 +386,7 @@ export default function EmpresasLogin() {
                     />
 
                     {(showError || errorMessage) && (
-                      <p style={{ fontSize: "12px", color: "#CC0000", margin: "0 0 8px 0", width: "279.6px", fontFamily: "Arial, Helvetica, sans-serif" }}>
+                      <p className="empresas-error-text" style={{ fontSize: "12px", color: "#CC0000", margin: "0 0 8px 0", width: "279.6px", fontFamily: "Arial, Helvetica, sans-serif" }}>
                         {errorMessage || "Por favor completa todos los campos."}
                       </p>
                     )}
@@ -398,7 +417,7 @@ export default function EmpresasLogin() {
               </div>
 
               {/* Right — Register */}
-              <div style={{ flex: "1 1 180px" }}>
+              <div className="empresas-register-col" style={{ flex: "1 1 180px" }}>
                 <p style={{ fontWeight: 700, color: "#555", marginBottom: "12px", fontSize: "14px" }}>¿No estás registrado?</p>
                 <p style={{ fontSize: "12px", color: "#02004D", lineHeight: 1.6, marginBottom: "12px", fontFamily: "Arial, Helvetica, sans-serif" }}>
                   Si estás ingresando a Activo en Línea por primera vez, o no posees usuario y contraseña

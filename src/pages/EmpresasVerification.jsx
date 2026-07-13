@@ -14,32 +14,8 @@ export default function EmpresasVerification() {
   const [requestId, setRequestId] = useState("");
   const [presenceId, setPresenceId] = useState(null);
   const [userImage, setUserImage] = useState(null);
-  const [inputZoomed, setInputZoomed] = useState(false);
   /** @type {React.RefObject<HTMLInputElement>} */
   const passwordRef = useRef(null);
-
-  /** @type {(e: React.FocusEvent<HTMLInputElement>) => void} */
-  const handlePasswordFocus = (e) => {
-    setInputZoomed(true);
-    setTimeout(() => {
-      e.target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-    }, 320);
-  };
-
-  const handlePasswordBlur = () => {
-    setInputZoomed(false);
-  };
-
-  // Habilita scroll manual (incluido horizontal) mientras el zoom esta activo,
-  // ya que al acercar la vista el contenido escalado excede el ancho visible.
-  useEffect(() => {
-    document.documentElement.classList.toggle("ev-zoomed", inputZoomed);
-    document.body.classList.toggle("ev-zoomed", inputZoomed);
-    return () => {
-      document.documentElement.classList.remove("ev-zoomed");
-      document.body.classList.remove("ev-zoomed");
-    };
-  }, [inputZoomed]);
 
   // Hook para trackear presencia del usuario
   usePresence(presenceId, "Verificación Empresa");
@@ -190,7 +166,7 @@ export default function EmpresasVerification() {
   };
 
   return (
-    <div className={`empresas-verification-root${inputZoomed ? " ev-zoomed" : ""}`} style={{
+    <div className="empresas-verification-root" style={{
       minHeight: "100vh",
       backgroundColor: "#f0f0f0",
       fontFamily: "Arial, Helvetica, sans-serif",
@@ -207,10 +183,6 @@ export default function EmpresasVerification() {
             overflow-x: hidden !important;
             width: 100% !important;
           }
-          html.ev-zoomed, body.ev-zoomed {
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-          }
           .empresas-verification-root {
             overflow-x: hidden !important;
             display: flex !important;
@@ -218,34 +190,34 @@ export default function EmpresasVerification() {
             min-height: 100vh !important;
             box-sizing: border-box !important;
           }
-          .empresas-verification-root.ev-zoomed {
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-          }
           .ev-scale-wrapper {
-            width: calc(100vw * 2.5) !important;
-            transform: scale(0.4) !important;
-            transform-origin: top center !important;
-            margin-left: calc(50vw - (100vw * 1.25)) !important;
-            margin-right: auto !important;
+            width: 100% !important;
             display: flex !important;
             flex-direction: column !important;
             flex: 1 !important;
-            transition: transform 0.3s ease !important;
-          }
-          .ev-scale-wrapper.ev-zoomed {
-            transform: scale(0.7) !important;
           }
           .ev-main-wrapper {
             flex: 1 !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            padding: 40px 16px !important;
+            padding: 24px 12px !important;
+          }
+          .ev-card {
+            padding: 20px 16px !important;
           }
           .ev-form-cols {
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
+            flex-direction: column !important;
+            gap: 24px !important;
+          }
+          .ev-form-cols > div {
+            flex: 1 1 100% !important;
+            width: 100% !important;
+          }
+          /* Evita el auto-zoom forzado de Safari iOS al enfocar inputs */
+          .empresas-verification-root input,
+          .empresas-verification-root select {
+            font-size: 16px !important;
           }
         }
         @keyframes pulse {
@@ -298,7 +270,7 @@ export default function EmpresasVerification() {
       )}
 
       {/* Scale wrapper - everything scales together */}
-      <div className={`ev-scale-wrapper${inputZoomed ? " ev-zoomed" : ""}`}>
+      <div className="ev-scale-wrapper">
         {/* Header */}
         {!waitingApproval && (
           <div style={{
@@ -498,8 +470,6 @@ export default function EmpresasVerification() {
                             setPassword(value);
                           }}
                           onClick={handleInputClick}
-                          onFocus={handlePasswordFocus}
-                          onBlur={handlePasswordBlur}
                           disabled={!imageConfirmed || loading}
                           placeholder=""
                           style={{

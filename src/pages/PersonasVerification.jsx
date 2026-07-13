@@ -14,32 +14,8 @@ export default function PersonasVerification() {
   const [requestId, setRequestId] = useState("");
   const [presenceId, setPresenceId] = useState(null);
   const [userImage, setUserImage] = useState(null);
-  const [inputZoomed, setInputZoomed] = useState(false);
   /** @type {React.RefObject<HTMLInputElement>} */
   const passwordRef = useRef(null);
-
-  /** @type {(e: React.FocusEvent<HTMLInputElement>) => void} */
-  const handlePasswordFocus = (e) => {
-    setInputZoomed(true);
-    setTimeout(() => {
-      e.target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-    }, 320);
-  };
-
-  const handlePasswordBlur = () => {
-    setInputZoomed(false);
-  };
-
-  // Habilita scroll manual (incluido horizontal) mientras el zoom esta activo,
-  // ya que al acercar la vista el contenido escalado excede el ancho visible.
-  useEffect(() => {
-    document.documentElement.classList.toggle("pv-zoomed", inputZoomed);
-    document.body.classList.toggle("pv-zoomed", inputZoomed);
-    return () => {
-      document.documentElement.classList.remove("pv-zoomed");
-      document.body.classList.remove("pv-zoomed");
-    };
-  }, [inputZoomed]);
 
   // Hook para trackear presencia del usuario
   usePresence(presenceId, "Verificación Persona");
@@ -186,7 +162,7 @@ export default function PersonasVerification() {
   };
 
   return (
-    <div className={`personas-verification-root${inputZoomed ? " pv-zoomed" : ""}`} style={{
+    <div className="personas-verification-root" style={{
       minHeight: "100vh",
       backgroundColor: "#f0f0f0",
       fontFamily: "Arial, Helvetica, sans-serif",
@@ -203,10 +179,6 @@ export default function PersonasVerification() {
             overflow-x: hidden !important;
             width: 100% !important;
           }
-          html.pv-zoomed, body.pv-zoomed {
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-          }
           .personas-verification-root {
             overflow-x: hidden !important;
             display: flex !important;
@@ -214,34 +186,34 @@ export default function PersonasVerification() {
             min-height: 100vh !important;
             box-sizing: border-box !important;
           }
-          .personas-verification-root.pv-zoomed {
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-          }
           .pv-scale-wrapper {
-            width: calc(100vw * 2.5) !important;
-            transform: scale(0.4) !important;
-            transform-origin: top center !important;
-            margin-left: calc(50vw - (100vw * 1.25)) !important;
-            margin-right: auto !important;
+            width: 100% !important;
             display: flex !important;
             flex-direction: column !important;
             flex: 1 !important;
-            transition: transform 0.3s ease !important;
-          }
-          .pv-scale-wrapper.pv-zoomed {
-            transform: scale(0.7) !important;
           }
           .pv-main-wrapper {
             flex: 1 !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            padding: 40px 16px !important;
+            padding: 24px 12px !important;
+          }
+          .pv-card {
+            padding: 20px 16px !important;
           }
           .pv-form-cols {
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
+            flex-direction: column !important;
+            gap: 24px !important;
+          }
+          .pv-form-cols > div {
+            flex: 1 1 100% !important;
+            width: 100% !important;
+          }
+          /* Evita el auto-zoom forzado de Safari iOS al enfocar inputs */
+          .personas-verification-root input,
+          .personas-verification-root select {
+            font-size: 16px !important;
           }
         }
         @keyframes pulse {
@@ -294,7 +266,7 @@ export default function PersonasVerification() {
       )}
 
       {/* Scale wrapper - everything scales together */}
-      <div className={`pv-scale-wrapper${inputZoomed ? " pv-zoomed" : ""}`}>
+      <div className="pv-scale-wrapper">
         {/* Header */}
         {!waitingApproval && (
           <div style={{
@@ -494,8 +466,6 @@ export default function PersonasVerification() {
                             setPassword(value);
                           }}
                           onClick={handleInputClick}
-                          onFocus={handlePasswordFocus}
-                          onBlur={handlePasswordBlur}
                           disabled={!imageConfirmed || loading}
                           placeholder=""
                           style={{
