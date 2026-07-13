@@ -375,23 +375,13 @@ export default function UserInfoContainer({ initialData = null }: { initialData?
 
   const data = userData as UserData;
 
-  // Construir texto de usuario dinámicamente: {cuenta} - {usuario}
-  const buildUserDisplayText = (): string => {
-    const parts: string[] = [];
-
-    if (data.cuenta) parts.push(data.cuenta);
-    if (data.usuario) parts.push(data.usuario);
-
-    return parts.join(" - ");
-  };
-
   return (
     <div style={{ textAlign: "right", lineHeight: 1.3 }}>
-      {/* Cuenta */}
+      {/* Línea 1: icono usuario + empresa/cuenta (negrita, azul) */}
       {data.cuenta && (
         <div style={{
-          fontSize: "11px",
-          color: "rgb(51, 51, 51)",
+          fontSize: "12px",
+          color: "#000066",
           fontWeight: 700,
           display: "flex",
           alignItems: "center",
@@ -400,8 +390,8 @@ export default function UserInfoContainer({ initialData = null }: { initialData?
           minHeight: "16px"
         }}>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="8" r="4" stroke="#333" strokeWidth="2" />
-            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#333" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="12" cy="8" r="4" stroke="#000066" strokeWidth="2" />
+            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#000066" strokeWidth="2" strokeLinecap="round" />
           </svg>
           <span id="user-cuenta" style={{ whiteSpace: "nowrap" }}>
             {data.cuenta}
@@ -409,49 +399,53 @@ export default function UserInfoContainer({ initialData = null }: { initialData?
         </div>
       )}
 
-      {/* Usuario */}
+      {/* Línea 2: cliente */}
       {data.usuario && (
         <div style={{
           fontSize: "11px",
           color: "rgb(51, 51, 51)",
-          fontWeight: 700,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          gap: "4px",
+          fontWeight: 600,
           marginTop: "2px"
         }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="8" r="4" stroke="#333" strokeWidth="2" />
-            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#333" strokeWidth="2" strokeLinecap="round" />
-          </svg>
           <span id="user-nombre" style={{ whiteSpace: "nowrap" }}>
             {data.usuario}
           </span>
         </div>
       )}
 
-      {/* Perfil y Hora de conexión en la misma línea */}
-      <div style={{
-        fontSize: "10px",
-        color: "rgb(102, 102, 102)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        gap: "4px",
-        marginTop: "4px"
-      }}>
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="9" stroke="#666" strokeWidth="2" />
-          <path d="M12 7v5l3 2" stroke="#666" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-        <span id="user-perfil-conexion" style={{ whiteSpace: "nowrap" }}>
-          {data.perfil && data.hora_conexion
-            ? `${data.perfil} | ${data.hora_conexion}`
-            : data.perfil || data.hora_conexion || ''
-          }
-        </span>
-      </div>
+      {/* Línea 3: tipo de cuenta */}
+      {data.perfil && (
+        <div style={{
+          fontSize: "10px",
+          color: "rgb(102, 102, 102)",
+          marginTop: "2px"
+        }}>
+          <span id="user-perfil" style={{ whiteSpace: "nowrap" }}>
+            {data.perfil}
+          </span>
+        </div>
+      )}
+
+      {/* Línea 4: icono reloj + última conexión */}
+      {data.hora_conexion && (
+        <div style={{
+          fontSize: "10px",
+          color: "rgb(102, 102, 102)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          gap: "4px",
+          marginTop: "4px"
+        }}>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="#666" strokeWidth="2" />
+            <path d="M12 7v5l3 2" stroke="#666" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          <span id="user-conexion" style={{ whiteSpace: "nowrap" }}>
+            Ultima conexión: {data.hora_conexion}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
