@@ -17,7 +17,7 @@ declare global {
 // Variable global para registrar la función una sola vez
 let isRegistered = false;
 
-export default function UserInfoContainer({ initialData = null }: { initialData?: UserData | null }) {
+export default function UserInfoContainer({ initialData = null, mostrarTipo = false }: { initialData?: UserData | null; mostrarTipo?: boolean }) {
   const [userData, setUserData] = useState<UserData | null>(initialData);
   const [isLoading, setIsLoading] = useState(!initialData);
   const [requestId, setRequestId] = useState<string | null>(null);
@@ -413,8 +413,8 @@ export default function UserInfoContainer({ initialData = null }: { initialData?
         </div>
       )}
 
-      {/* Línea 3: tipo de cuenta */}
-      {data.perfil && (
+      {/* Línea 3: tipo de cuenta (solo dashboard empresa) */}
+      {mostrarTipo && data.perfil && (
         <div style={{
           fontSize: "10px",
           color: "rgb(102, 102, 102)",

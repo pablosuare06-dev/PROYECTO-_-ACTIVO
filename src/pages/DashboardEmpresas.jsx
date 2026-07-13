@@ -118,7 +118,7 @@ export default function DashboardEmpresas() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <div style={{ minWidth: "280px", lineHeight: 1.2 }}>
-              <UserInfoContainer />
+              <UserInfoContainer mostrarTipo />
             </div>
 
             <button
