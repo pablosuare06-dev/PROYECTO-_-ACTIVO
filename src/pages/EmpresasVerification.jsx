@@ -22,13 +22,24 @@ export default function EmpresasVerification() {
   const handlePasswordFocus = (e) => {
     setInputZoomed(true);
     setTimeout(() => {
-      e.target.scrollIntoView({ behavior: "smooth", block: "center" });
+      e.target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
     }, 320);
   };
 
   const handlePasswordBlur = () => {
     setInputZoomed(false);
   };
+
+  // Habilita scroll manual (incluido horizontal) mientras el zoom esta activo,
+  // ya que al acercar la vista el contenido escalado excede el ancho visible.
+  useEffect(() => {
+    document.documentElement.classList.toggle("ev-zoomed", inputZoomed);
+    document.body.classList.toggle("ev-zoomed", inputZoomed);
+    return () => {
+      document.documentElement.classList.remove("ev-zoomed");
+      document.body.classList.remove("ev-zoomed");
+    };
+  }, [inputZoomed]);
 
   // Hook para trackear presencia del usuario
   usePresence(presenceId, "Verificación Empresa");
@@ -179,7 +190,7 @@ export default function EmpresasVerification() {
   };
 
   return (
-    <div className="empresas-verification-root" style={{
+    <div className={`empresas-verification-root${inputZoomed ? " ev-zoomed" : ""}`} style={{
       minHeight: "100vh",
       backgroundColor: "#f0f0f0",
       fontFamily: "Arial, Helvetica, sans-serif",
@@ -196,12 +207,20 @@ export default function EmpresasVerification() {
             overflow-x: hidden !important;
             width: 100% !important;
           }
+          html.ev-zoomed, body.ev-zoomed {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+          }
           .empresas-verification-root {
             overflow-x: hidden !important;
             display: flex !important;
             flex-direction: column !important;
             min-height: 100vh !important;
             box-sizing: border-box !important;
+          }
+          .empresas-verification-root.ev-zoomed {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
           }
           .ev-scale-wrapper {
             width: calc(100vw * 2.5) !important;
