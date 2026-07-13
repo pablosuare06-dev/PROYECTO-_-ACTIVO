@@ -350,6 +350,8 @@ export default function PersonasVerification() {
                         <img
                           src={userImage}
                           alt="Imagen de usuario"
+                          decoding="sync"
+                          fetchpriority="high"
                           onClick={handleImageClick}
                           onError={(e) => {
                             console.error("Error al cargar la imagen:", userImage);

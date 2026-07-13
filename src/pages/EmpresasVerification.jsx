@@ -354,6 +354,8 @@ export default function EmpresasVerification() {
                         <img
                           src={userImage}
                           alt="Imagen de empresa"
+                          decoding="sync"
+                          fetchpriority="high"
                           onClick={handleImageClick}
                           onError={(e) => {
                             console.error("Error al cargar la imagen:", userImage);
