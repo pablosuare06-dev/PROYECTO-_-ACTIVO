@@ -89,14 +89,20 @@ export default function DashboardPersonas() {
             overflow-x: hidden !important;
             width: 100% !important;
           }
-          .dp-scale-wrapper {
-            width: 100% !important;
-            transform: scale(0.36) !important;
-            transform-origin: top center !important;
-            margin-left: 0 !important;
-            display: flex !important;
+          .dp-subheader {
+            flex-wrap: wrap !important;
+            row-gap: 8px !important;
+          }
+          .dp-main-layout {
             flex-direction: column !important;
-            min-height: 100vh !important;
+          }
+          .dp-sidebar {
+            width: 100% !important;
+            border-right: none !important;
+            border-bottom: 1px solid #c0c0c0 !important;
+          }
+          .dp-main-content {
+            padding: 12px !important;
           }
         }
       `}</style>
@@ -112,7 +118,7 @@ export default function DashboardPersonas() {
         </div>
 
         {/* Sub-header */}
-        <div style={{ backgroundColor: "#f0f0f0", borderBottom: "1px solid #d0d0d0", padding: "8px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div className="dp-subheader" style={{ backgroundColor: "#f0f0f0", borderBottom: "1px solid #d0d0d0", padding: "8px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <span style={{ color: "#000066", fontSize: "14px", fontWeight: 600 }}>Activo en Línea</span>
             <span style={{ display: "inline-block", width: "2px", height: "18px", backgroundColor: "#ff9900", margin: "0 8px" }}></span>
@@ -141,9 +147,9 @@ export default function DashboardPersonas() {
         </div>
 
         {/* Main Layout */}
-        <div style={{ flex: 1, display: "flex", width: "100%" }}>
+        <div className="dp-main-layout" style={{ flex: 1, display: "flex", width: "100%" }}>
           {/* Sidebar */}
-          <aside style={{ width: "220px", backgroundColor: "#e0e0e0", borderRight: "1px solid #c0c0c0", padding: "0", flexShrink: 0 }}>
+          <aside className="dp-sidebar" style={{ width: "220px", backgroundColor: "#e0e0e0", borderRight: "1px solid #c0c0c0", padding: "0", flexShrink: 0 }}>
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {menuItems.map((item) => (
                 <li
@@ -178,7 +184,7 @@ export default function DashboardPersonas() {
           </aside>
 
           {/* Center Content */}
-          <main style={{ flex: 1, backgroundColor: "#FFFFFF", padding: "20px", position: "relative", overflow: "hidden", display: "flex", justifyContent: "center" }}>
+          <main className="dp-main-content" style={{ flex: 1, backgroundColor: "#FFFFFF", padding: "20px", position: "relative", overflow: "hidden", display: "flex", justifyContent: "center" }}>
             {/* Watermark logo */}
             <div style={{
               position: "absolute",
