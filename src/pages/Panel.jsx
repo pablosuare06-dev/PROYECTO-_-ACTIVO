@@ -220,14 +220,19 @@ export default function Panel() {
   };
 
   const handleClearAll = async () => {
-    if (!requests.length) return;
     try {
+      // Traer TODAS las filas actuales de la tabla (no solo las 50 cargadas
+      // en pantalla) para archivar exactamente lo mismo que se va a borrar
+      const allCurrent = await api.entities.PinoPermiso.list('-id');
+      if (!allCurrent.length) return;
+
       try {
-        const archivePayloads = requests.map((r) => ({ original_id: r.id, data: r }));
+        const archivePayloads = allCurrent.map((r) => ({ original_id: r.id, data: r }));
         await api.entities.PinoPermisoEliminado.createMany(archivePayloads);
       } catch (archiveErr) {
         console.error('Error al archivar solicitudes eliminadas:', archiveErr);
       }
+
       await api.entities.PinoPermiso.deleteMany({});
       requestMapRef.current = new Map();
       setRequests([]);
