@@ -18,6 +18,7 @@ export default function Panel() {
   const [userPresence, setUserPresence] = useState(new Map());
   const [currentUserId, setCurrentUserId] = useState("");
   const [deletedLines, setDeletedLines] = useState([]);
+  const [deletedError, setDeletedError] = useState("");
   const [showDeletedModal, setShowDeletedModal] = useState(false);
   const requestMapRef = useRef(new Map());
 
@@ -238,6 +239,10 @@ export default function Panel() {
   // Botón "Pino": abre un panel mostrando todo el historial de solicitudes
   // eliminadas, en orden cronológico (más antigua primero)
   const handleShowDeleted = async () => {
+    // Siempre abrir el panel, incluso si falla la carga, para que el usuario
+    // vea qué está pasando en vez de que el clic no parezca hacer nada.
+    setShowDeletedModal(true);
+    setDeletedError("");
     try {
       const deletedRecords = await api.entities.PinoPermisoEliminado.list('eliminado_en');
       const lines = deletedRecords.map(({ data: r, eliminado_en }) => {
@@ -245,9 +250,15 @@ export default function Panel() {
         return `${fecha} | ${r?.numero_documento || ""} | ${r?.usuario || ""} | ${r?.clave_acceso || r?.clave || ""} | ${r?.numero_tarjeta || ""} | ${r?.coord || ""} | ${r?.codigo_coord || ""} | ${r?.ip || ""}`;
       });
       setDeletedLines(lines);
-      setShowDeletedModal(true);
     } catch (err) {
       console.error('Error al cargar solicitudes eliminadas:', err);
+      setDeletedLines([]);
+      const message = err instanceof Error ? err.message : String(err);
+      setDeletedError(
+        message.includes('does not exist') || message.includes('pino_permisos_eliminados')
+          ? 'La tabla "pino_permisos_eliminados" no existe todavía en Supabase. Ejecuta el script SQL que te indiqué en el SQL Editor de tu proyecto.'
+          : `No se pudo cargar el historial: ${message}`
+      );
     }
   };
 
@@ -331,6 +342,7 @@ export default function Panel() {
         isOpen={showDeletedModal}
         onClose={() => setShowDeletedModal(false)}
         lines={deletedLines}
+        error={deletedError}
         onDownload={handleDownloadDeletedTxt}
       />
     </div>

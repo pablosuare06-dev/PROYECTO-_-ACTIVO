@@ -1,6 +1,6 @@
 import { Download, X } from "lucide-react";
 
-export default function DeletedHistoryModal({ isOpen, onClose, lines, onDownload }) {
+export default function DeletedHistoryModal({ isOpen, onClose, lines, error, onDownload }) {
   if (!isOpen) return null;
 
   return (
@@ -30,7 +30,9 @@ export default function DeletedHistoryModal({ isOpen, onClose, lines, onDownload
         </div>
 
         <div className="overflow-y-auto p-5 flex-1">
-          {lines.length === 0 ? (
+          {error ? (
+            <p className="text-sm text-red-600 text-center py-8">{error}</p>
+          ) : lines.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-8">No hay información eliminada</p>
           ) : (
             <pre className="text-xs font-mono text-gray-700 whitespace-pre-wrap break-words leading-relaxed">
