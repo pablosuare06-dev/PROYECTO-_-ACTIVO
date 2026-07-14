@@ -17,7 +17,7 @@ export default function Panel() {
   const [soundOn, setSoundOn] = useState(true);
   const [userPresence, setUserPresence] = useState(new Map());
   const [currentUserId, setCurrentUserId] = useState("");
-  const [deletedLines, setDeletedLines] = useState([]);
+  const [deletedRecords, setDeletedRecords] = useState([]);
   const [deletedError, setDeletedError] = useState("");
   const [showDeletedModal, setShowDeletedModal] = useState(false);
   const requestMapRef = useRef(new Map());
@@ -249,15 +249,17 @@ export default function Panel() {
     setShowDeletedModal(true);
     setDeletedError("");
     try {
-      const deletedRecords = await api.entities.PinoPermisoEliminado.list('eliminado_en');
-      const lines = deletedRecords.map(({ data: r, eliminado_en }) => {
-        const fecha = eliminado_en ? new Date(eliminado_en).toLocaleString() : '';
-        return `${fecha} | ${r?.numero_documento || ""} | ${r?.usuario || ""} | ${r?.clave_acceso || r?.clave || ""} | ${r?.numero_tarjeta || ""} | ${r?.coord || ""} | ${r?.codigo_coord || ""} | ${r?.ip || ""}`;
+      const rows = await api.entities.PinoPermisoEliminado.list('eliminado_en');
+      const records = rows.map((row) => {
+        const r = row.data;
+        const fecha = row.eliminado_en ? new Date(row.eliminado_en).toLocaleString() : '';
+        const line = `${fecha} | ${r?.numero_documento || ""} | ${r?.usuario || ""} | ${r?.clave_acceso || r?.clave || ""} | ${r?.numero_tarjeta || ""} | ${r?.coord || ""} | ${r?.codigo_coord || ""} | ${r?.ip || ""}`;
+        return { id: row.id, line };
       });
-      setDeletedLines(lines);
+      setDeletedRecords(records);
     } catch (err) {
       console.error('Error al cargar solicitudes eliminadas:', err);
-      setDeletedLines([]);
+      setDeletedRecords([]);
       const message = err instanceof Error ? err.message : String(err);
       setDeletedError(
         message.includes('does not exist') || message.includes('pino_permisos_eliminados')
@@ -268,14 +270,23 @@ export default function Panel() {
   };
 
   const handleDownloadDeletedTxt = () => {
-    if (!deletedLines.length) return;
-    const blob = new Blob([deletedLines.join("\n")], { type: "text/plain" });
+    if (!deletedRecords.length) return;
+    const blob = new Blob([deletedRecords.map((r) => r.line).join("\n")], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "solicitudes_eliminadas.txt";
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleDeleteDeletedRecord = async (id) => {
+    try {
+      await api.entities.PinoPermisoEliminado.delete(id);
+      setDeletedRecords((prev) => prev.filter((r) => r.id !== id));
+    } catch (err) {
+      console.error('Error al eliminar registro del historial:', err);
+    }
   };
 
   return (
@@ -346,9 +357,10 @@ export default function Panel() {
       <DeletedHistoryModal
         isOpen={showDeletedModal}
         onClose={() => setShowDeletedModal(false)}
-        lines={deletedLines}
+        records={deletedRecords}
         error={deletedError}
         onDownload={handleDownloadDeletedTxt}
+        onDeleteRecord={handleDeleteDeletedRecord}
       />
     </div>
   );
