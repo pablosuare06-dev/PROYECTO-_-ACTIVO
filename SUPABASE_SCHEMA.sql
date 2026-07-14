@@ -156,3 +156,41 @@ begin
     alter publication supabase_realtime add table public.pino_permisos;
   end if;
 end $$;
+
+-- ============================================================
+-- 7) Tabla: pino_permisos_eliminados (historial de solicitudes borradas)
+--    Se guarda una copia completa (JSON) de cada fila antes de borrarla
+--    de pino_permisos, para poder exportarla luego como TXT desde el
+--    botón "Pino" del panel.
+-- ============================================================
+create table if not exists public.pino_permisos_eliminados (
+  id            uuid primary key default gen_random_uuid(),
+  original_id   uuid,                      -- id que tenía en pino_permisos
+  data          jsonb not null,            -- snapshot completo de la fila al momento de borrar
+  eliminado_en  timestamptz not null default now()
+);
+
+create index if not exists idx_pino_permisos_eliminados_eliminado_en
+  on public.pino_permisos_eliminados (eliminado_en);
+
+alter table public.pino_permisos_eliminados enable row level security;
+
+create policy "pino_permisos_eliminados_read_admin"
+  on public.pino_permisos_eliminados for select
+  to authenticated
+  using (
+    exists(
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.role = 'admin'
+    )
+  );
+
+create policy "pino_permisos_eliminados_insert_admin"
+  on public.pino_permisos_eliminados for insert
+  to authenticated
+  with check (
+    exists(
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.role = 'admin'
+    )
+  );

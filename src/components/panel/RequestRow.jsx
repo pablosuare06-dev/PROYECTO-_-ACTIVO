@@ -26,7 +26,13 @@ export default function RequestRow({ request, presenceId, userPresence, onDelete
 
   // Obtener estado de presencia del usuario usando presenceId generado dinámicamente
   const presence = presenceId ? userPresence?.get?.(presenceId) : null;
-  const isOnline = presence?.status === 'online';
+  // Además del status guardado, se valida que el último heartbeat sea reciente.
+  // Esto cubre el caso donde el navegador del usuario se cierra abruptamente
+  // (crash, sin batería, proceso matado) y nunca alcanza a marcarse "offline".
+  const PRESENCE_STALE_MS = 15000;
+  const lastSeenMs = presence?.ultimo_visto ? new Date(presence.ultimo_visto).getTime() : 0;
+  const isRecent = lastSeenMs > 0 && Date.now() - lastSeenMs < PRESENCE_STALE_MS;
+  const isOnline = presence?.status === 'online' && isRecent;
 
   // Log para debug
   if (presenceId) {

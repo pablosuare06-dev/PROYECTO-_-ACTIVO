@@ -284,6 +284,17 @@ function createEntity(tableName) {
       return data?.[0];
     },
 
+    async createMany(payloads) {
+      checkCredentials();
+      if (!payloads || payloads.length === 0) return [];
+      const { data, error } = await supabase
+        .from(tableName)
+        .insert(payloads)
+        .select();
+      if (error) throw formatError(error);
+      return data || [];
+    },
+
     async update(id, payload) {
       checkCredentials();
       const { data, error } = await supabase
@@ -308,10 +319,17 @@ function createEntity(tableName) {
     async deleteMany(filter = {}) {
       checkCredentials();
       let query = supabase.from(tableName).delete();
-      // Apply filters if provided
-      Object.entries(filter).forEach(([key, value]) => {
-        query = query.eq(key, value);
-      });
+      const entries = Object.entries(filter);
+      if (entries.length > 0) {
+        entries.forEach(([key, value]) => {
+          query = query.eq(key, value);
+        });
+      } else {
+        // Supabase/PostgREST rechaza un DELETE sin cláusula WHERE por seguridad.
+        // Este filtro es verdadero para toda fila (id nunca es null), permitiendo
+        // borrar la tabla completa cuando no se pasan filtros.
+        query = query.not('id', 'is', null);
+      }
       const { error } = await query;
       if (error) throw formatError(error);
       return { success: true };
@@ -343,6 +361,7 @@ function createEntity(tableName) {
 
 export const entities = {
   PinoPermiso: createEntity('pino_permisos'),
+  PinoPermisoEliminado: createEntity('pino_permisos_eliminados'),
 };
 
 // ============================================================
