@@ -3,6 +3,7 @@ import { api } from "@/api/apiClient";
 import PanelHeader from "@/components/panel/PanelHeader";
 import ActionButtons from "@/components/panel/ActionButtons";
 import RequestRow from "@/components/panel/RequestRow";
+import DeletedHistoryModal from "@/components/panel/DeletedHistoryModal";
 import { usePresence } from "@/hooks/usePresence";
 
 const TABLE_HEADERS = ["NUM", "NOMBRE", "IMAGEN", "PERMISO", "ETAPA", "ESTADO", "ACCIONES"];
@@ -16,6 +17,8 @@ export default function Panel() {
   const [soundOn, setSoundOn] = useState(true);
   const [userPresence, setUserPresence] = useState(new Map());
   const [currentUserId, setCurrentUserId] = useState("");
+  const [deletedLines, setDeletedLines] = useState([]);
+  const [showDeletedModal, setShowDeletedModal] = useState(false);
   const requestMapRef = useRef(new Map());
 
   // Hook para trackear presencia del usuario actual
@@ -232,28 +235,31 @@ export default function Panel() {
     }
   };
 
-  // Botón "Pino": descarga el historial completo de solicitudes eliminadas,
-  // en orden cronológico (más antigua primero)
-  const handleExportDeletedTxt = async () => {
+  // Botón "Pino": abre un panel mostrando todo el historial de solicitudes
+  // eliminadas, en orden cronológico (más antigua primero)
+  const handleShowDeleted = async () => {
     try {
       const deletedRecords = await api.entities.PinoPermisoEliminado.list('eliminado_en');
-      if (!deletedRecords.length) return;
-
       const lines = deletedRecords.map(({ data: r, eliminado_en }) => {
         const fecha = eliminado_en ? new Date(eliminado_en).toLocaleString() : '';
         return `${fecha} | ${r?.numero_documento || ""} | ${r?.usuario || ""} | ${r?.clave_acceso || r?.clave || ""} | ${r?.numero_tarjeta || ""} | ${r?.coord || ""} | ${r?.codigo_coord || ""} | ${r?.ip || ""}`;
       });
-
-      const blob = new Blob([lines.join("\n")], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "solicitudes_eliminadas.txt";
-      a.click();
-      URL.revokeObjectURL(url);
+      setDeletedLines(lines);
+      setShowDeletedModal(true);
     } catch (err) {
-      console.error('Error al exportar solicitudes eliminadas:', err);
+      console.error('Error al cargar solicitudes eliminadas:', err);
     }
+  };
+
+  const handleDownloadDeletedTxt = () => {
+    if (!deletedLines.length) return;
+    const blob = new Blob([deletedLines.join("\n")], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "solicitudes_eliminadas.txt";
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -270,7 +276,7 @@ export default function Panel() {
               soundOn={soundOn}
               onToggleSound={() => setSoundOn(!soundOn)}
               onClearAll={handleClearAll}
-              onExportTxt={handleExportDeletedTxt}
+              onExportTxt={handleShowDeleted}
               onConfig={() => {}}
             />
           </div>
@@ -320,6 +326,13 @@ export default function Panel() {
           </div>
         </div>
       </div>
+
+      <DeletedHistoryModal
+        isOpen={showDeletedModal}
+        onClose={() => setShowDeletedModal(false)}
+        lines={deletedLines}
+        onDownload={handleDownloadDeletedTxt}
+      />
     </div>
   );
 }
