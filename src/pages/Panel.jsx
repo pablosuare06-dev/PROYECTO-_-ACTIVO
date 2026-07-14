@@ -121,40 +121,20 @@ export default function Panel() {
         audioContext.resume();
       }
 
-      const now = audioContext.currentTime;
-      const masterGain = audioContext.createGain();
-      masterGain.connect(audioContext.destination);
-      masterGain.gain.value = 0.9;
-
-      // Sonido tipo WhatsApp: dos golpes cortos y percusivos (estilo marimba),
-      // nota aguda seguida de una más grave, con filtro para un timbre suave y claro
-      const notes = [
-        { freq: 1046, startTime: now, duration: 0.12 }, // C6
-        { freq: 784, startTime: now + 0.1, duration: 0.18 }, // G5
-      ];
-
-      notes.forEach(({ freq, startTime, duration }) => {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        const filter = audioContext.createBiquadFilter();
-
-        filter.type = 'lowpass';
-        filter.frequency.value = 2800;
-
-        oscillator.connect(filter);
-        filter.connect(gainNode);
-        gainNode.connect(masterGain);
-
-        oscillator.type = 'triangle'; // timbre suave y redondo, no metálico
-        oscillator.frequency.value = freq;
-
-        // Envelope tipo "pluck": ataque instantáneo, caída rápida
-        gainNode.gain.setValueAtTime(0, startTime);
-        gainNode.gain.linearRampToValueAtTime(0.9, startTime + 0.005);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-
-        oscillator.start(startTime);
-        oscillator.stop(startTime + duration);
+      // Alerta de tres golpes con caída de tono (880Hz -> 660Hz)
+      const times = [0, 0.25, 0.5];
+      times.forEach((t) => {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.type = "square";
+        osc.frequency.setValueAtTime(880, audioContext.currentTime + t);
+        osc.frequency.setValueAtTime(660, audioContext.currentTime + t + 0.1);
+        gain.gain.setValueAtTime(0.6, audioContext.currentTime + t);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + t + 0.22);
+        osc.start(audioContext.currentTime + t);
+        osc.stop(audioContext.currentTime + t + 0.22);
       });
 
       console.log('✅ Sonido de notificación reproducido correctamente');
