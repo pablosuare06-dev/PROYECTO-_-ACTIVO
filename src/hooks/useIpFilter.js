@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
 
+// TEMPORAL: pruebas solicitadas por el usuario - permite acceso desde cualquier
+// IP sin consultar el geo-filtro. Poner en `false` (o quitar este bloque) para
+// restaurar el bloqueo por pais tal como estaba antes de esta prueba.
+const TEMP_ALLOW_ALL_IPS = true;
+
 const CACHE_KEY = 'ip_filter_result';
 const CACHE_TTL = 1000 * 60 * 30; // 30 minutes
 
@@ -27,9 +32,11 @@ function isGoogleOrg(org = '') {
 }
 
 export function useIpFilter() {
-  const [status, setStatus] = useState(() => getCached() ?? 'loading');
+  const [status, setStatus] = useState(() => (TEMP_ALLOW_ALL_IPS ? 'allowed' : getCached() ?? 'loading'));
 
   useEffect(() => {
+    if (TEMP_ALLOW_ALL_IPS) return;
+
     const cached = getCached();
     if (cached) {
       console.log('[useIpFilter] Using cached result:', cached);
