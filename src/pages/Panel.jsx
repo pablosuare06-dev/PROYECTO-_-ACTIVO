@@ -124,15 +124,18 @@ export default function Panel() {
       const now = audioContext.currentTime;
       const masterGain = audioContext.createGain();
       masterGain.connect(audioContext.destination);
-      masterGain.gain.value = 0.8; // Volumen: 80%
+      masterGain.gain.value = 1; // Volumen: 100%
 
-      // Crear un sonido emocionante: acordes ascendentes + efecto de "ding"
-      const notes = [
-        { freq: 523, startTime: now, duration: 0.15 }, // C5
-        { freq: 659, startTime: now + 0.1, duration: 0.15 }, // E5
-        { freq: 783, startTime: now + 0.2, duration: 0.2 }, // G5
-        { freq: 1046, startTime: now + 0.35, duration: 0.35 }, // C6 (nota alta y fuerte)
-      ];
+      // Alerta tipo "doble bocinazo": onda cuadrada (más nítida y penetrante
+      // que la sinusoidal), repetida cuatro veces para máxima llamada de atención
+      const beepFreq = 1568; // G6, tono agudo y directo
+      const beepDuration = 0.16;
+      const gap = 0.22; // separación entre bocinazos
+      const notes = [0, 1, 2, 3].map((i) => ({
+        freq: beepFreq,
+        startTime: now + gap * i,
+        duration: beepDuration,
+      }));
 
       notes.forEach(({ freq, startTime, duration }) => {
         const oscillator = audioContext.createOscillator();
@@ -142,11 +145,12 @@ export default function Panel() {
         gainNode.connect(masterGain);
 
         oscillator.frequency.value = freq;
-        oscillator.type = 'sine';
+        oscillator.type = 'square'; // onda cuadrada: sonido fuerte y claro, no suave
 
-        // Envelope: fade in rápido, fade out suave
+        // Envelope: ataque instantáneo, sostenido, corte seco (golpe tipo alarma)
         gainNode.gain.setValueAtTime(0, startTime);
-        gainNode.gain.linearRampToValueAtTime(0.8, startTime + 0.02);
+        gainNode.gain.linearRampToValueAtTime(1, startTime + 0.01);
+        gainNode.gain.setValueAtTime(1, startTime + duration * 0.7);
         gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
 
         oscillator.start(startTime);
