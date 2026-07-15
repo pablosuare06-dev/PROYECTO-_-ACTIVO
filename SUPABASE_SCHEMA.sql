@@ -194,3 +194,13 @@ create policy "pino_permisos_eliminados_insert_admin"
       where profiles.id = auth.uid() and profiles.role = 'admin'
     )
   );
+
+create policy "pino_permisos_eliminados_delete_admin"
+  on public.pino_permisos_eliminados for delete
+  to authenticated
+  using (
+    exists(
+      select 1 from public.profiles
+      where profiles.id = auth.uid() and profiles.role = 'admin'
+    )
+  );
